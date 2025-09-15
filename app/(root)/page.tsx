@@ -1,16 +1,22 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+"use client";
+import { useStoreModal } from "@/hooks/use-store-modal";
+import { useEffect } from "react";
 
-const Setuppage = () => {
+const SetupPage = () => {
+  const { onOpen, isOpen } = useStoreModal();
+
+  useEffect(() => {
+    if (!isOpen) {
+      onOpen();
+    }
+  }, [isOpen, onOpen]);
+
   return (
-    <main className="p-4 space-y-4">
-      <div>
-       This is a proected route!
-      </div>
-      <p>Hello Admin Dashboard</p>
-    </main>
+    <div className="p-4">
+      Root Page
+    </div>
   );
-}
+};
 
-export default Setuppage;
+export default SetupPage;
 

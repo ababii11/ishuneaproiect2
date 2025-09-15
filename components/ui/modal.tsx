@@ -6,7 +6,7 @@ interface ModalProps {
     title: string;
     description: string;
     isOpen: boolean;
-    onClose: () => void;
+    onClose?: () => void;
     children?: React.ReactNode;
 }
 
@@ -19,7 +19,7 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
     const onChange = (open: boolean) => {
         if (!open) {
-            onClose();
+            onClose?.();
         }
     };
 
