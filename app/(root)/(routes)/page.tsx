@@ -2,6 +2,7 @@
 import { useStoreModal } from "@/hooks/use-store-modal";
 import { useEffect } from "react";
 import { StoreModal } from "@/components/modals/store-modal";
+import { Noto_Sans_Tamil_Supplement } from "next/font/google";
 
 const SetupPage = () => {
   const { onOpen, isOpen } = useStoreModal();
@@ -12,13 +13,7 @@ const SetupPage = () => {
     }
   }, [isOpen, onOpen]);
 
-  return (
-    <>
-      <StoreModal />
-      <div className="p-4">Root Page</div>
-    </>
-  );
+  return null;
 };
-
 export default SetupPage;
 
