@@ -1,21 +1,9 @@
-import prismadb from "@/lib/prismadb";
-
-interface DashboardLayoutProps {
-    params: { storeId: string };
-};
-
-const DashboardPage: React.FC<DashboardLayoutProps> = async ({ params }) => {
-
-    const store = await prismadb.store.findFirst({
-        where: {
-            id: params.storeId,
-        },
-    });
+const DashboardPage = () => {
     return (
         <div>
-            Activate Store: {store?.name}
+            This is a Dashboard
         </div>
     );
-};
+}
 
 export default DashboardPage;
