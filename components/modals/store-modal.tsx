@@ -11,7 +11,9 @@ import { useStoreModal } from "@/hooks/use-store-modal";
 import { Modal } from "@/components/ui/modal";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ca } from "zod/v4/locales";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
 const formSchema = z.object({
     name: z.string().min(1),
 });
@@ -27,22 +29,18 @@ export const StoreModal = () => {
         },
     });
 
-
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setLoading(true);
 
             const response = await axios.post("/api/stores", values);
-
-            toast.success("Store created.");
-    } catch (error) {
+            window.location.assign(`/${response.data.id}`);
+        } catch (error) {
             toast.error("Something went wrong.");
         } finally {
             setLoading(false);
         }
-    }
-
-
+    };
 
     return (
         <Modal
@@ -62,28 +60,28 @@ export const StoreModal = () => {
                                     <FormItem>
                                         <FormLabel>Name</FormLabel>
                                         <FormControl>
-                                            <Input  disabled={loading} 
-                                            placeholder="Ecommerce" {...field} 
+                                            <Input
+                                                disabled={loading}
+                                                placeholder="Ecommerce"
+                                                {...field}
                                             />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
                             <div className="pt-6 space-x-2 flex items-center justify-end w-full">
-  <button
-    disabled={loading}
-    type="button"
-    className="px-4 py-2 rounded border"
-    onClick={storeModal.onClose}>
-    Cancel
-  </button>
-  <button
-    type="submit"
-    className="btn btn-primary">
-    Continue
-  </button>
-</div>
-
+                                <button
+                                    disabled={loading}
+                                    type="button"
+                                    className="px-4 py-2 rounded border"
+                                    onClick={storeModal.onClose}
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className="btn btn-primary">
+                                    Continue
+                                </button>
+                            </div>
                         </form>
                     </Form>
                 </div>
@@ -91,3 +89,13 @@ export const StoreModal = () => {
         </Modal>
     );
 };
+
+export default async function SetupLayout({ children }: { children: React.ReactNode }) {
+    const { userId } = await auth();
+
+    if (!userId) {
+        redirect("/sign-in");
+    }
+
+    return <>{children}</>;
+}
