@@ -11,14 +11,17 @@ import { useStoreModal } from "@/hooks/use-store-modal";
 import { Modal } from "@/components/ui/modal";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 const formSchema = z.object({
     name: z.string().min(1),
 });
 
-export const StoreModal = () => {
+interface StoreModalProps {
+    children?: React.ReactNode;
+    // ...other props
+}
+
+export const StoreModal = ({ children, ...props }: StoreModalProps) => {
     const storeModal = useStoreModal();
 
     const [loading, setLoading] = useState(false);
@@ -90,12 +93,4 @@ export const StoreModal = () => {
     );
 };
 
-export default async function SetupLayout({ children }: { children: React.ReactNode }) {
-    const { userId } = await auth();
-
-    if (!userId) {
-        redirect("/sign-in");
-    }
-
-    return <>{children}</>;
-}
+// Note: This is a client-only modal. Do not import server-only modules here.
