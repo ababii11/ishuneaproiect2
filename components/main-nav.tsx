@@ -12,6 +12,18 @@ export function MainNav({ className, ...props }: HTMLAttributes<HTMLDivElement>)
 
     const routes = [
         {
+            href: storeId ? `/${storeId}` : "/",
+            label: "Overview",
+            active: !!storeId && pathname === `/${storeId}`,
+        },
+
+ {
+            href: storeId ? `/${storeId}/billboards` : "/",
+            label: "Billboards",
+            active: !!storeId && pathname === `/${storeId}/billboard`,
+        },
+
+        {
             href: storeId ? `/${storeId}/settings` : "/",
             label: "Settings",
             active: !!storeId && pathname === `/${storeId}/settings`,
