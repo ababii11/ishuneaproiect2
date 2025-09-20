@@ -17,14 +17,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
+import ImageUpload from "@/components/ui/image-upload";
+
+const formSchema = z.object({
+  label: z.string().min(1),
+  imageURL: z.string().min(1),
+});
 
 interface BillboardFormProps {
   initialData: Billboard | null;
 }
-
-const formSchema = z.object({
-  label: z.string().min(1),
-});
 
 type BillboardFormValues = z.infer<typeof formSchema>;
 
@@ -36,9 +38,15 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const title = initialData ? "Edit Billboard" : "Create Billboard";
+  const description = initialData ? "Edit a billboard" : "Add a new billboard";
+  const action = initialData ? "Save changes" : "Create";
+
   const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData ? { label: initialData.label } : { label: "" },
+    defaultValues: initialData
+      ? { label: initialData.label, imageURL: initialData.imageUrl ?? "" }
+      : { label: "", imageURL: "" },
   });
 
   const onSubmit = async (data: BillboardFormValues) => {
@@ -74,16 +82,37 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
       <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
 
       <div className="flex items-center justify-between">
-        <Heading title="Billboard Settings" description="Manage this billboard's details" />
-        <Button disabled={loading} variant="destructive" size="icon" onClick={() => setOpen(true)}>
-          <Trash className="h-4 w-4" />
-        </Button>
+        <Heading title={title} description={description} />
+        {initialData && (
+          <Button disabled={loading} variant="destructive" size="icon" onClick={() => setOpen(true)}>
+            <Trash className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <Separator />
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+          <FormField
+            control={form.control}
+            name="imageURL"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Background image</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    value={field.value ? [field.value] : []}
+                    disabled={loading}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange("")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
@@ -101,14 +130,18 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
           </div>
 
           <Button disabled={loading} type="submit" className="ml-auto">
-            Save changes
+            {action}
           </Button>
         </form>
       </Form>
 
       <Separator />
 
-      <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/stores/${params?.storeId}/billboards/${params?.billboardId}`} variant="public" />
+      <ApiAlert
+        title="NEXT_PUBLIC_API_URL"
+        description={`${origin}/api/stores/${params?.storeId}/billboards/${params?.billboardId}`}
+        variant="public"
+      />
     </>
   );
 };

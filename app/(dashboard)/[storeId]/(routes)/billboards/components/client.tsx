@@ -18,7 +18,12 @@ const params = useParams();
                     title="Billboards (0)"
                     description="Manage billboards for your store"
                 />
-                <Button onClick={()=>router.push(`/${params?.storeID}/billboards/new`) } className="w-full sm:w-auto flex gap-2 items-center">
+                <Button
+  onClick={() => router.push(`/${params?.storeId}/billboards/new`)}
+  className="w-full sm:w-auto flex gap-2 items-center"
+>
+
+
                     <Plus className="h-4 w-4"/>
                     Add New
                 </Button>

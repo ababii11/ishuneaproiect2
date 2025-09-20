@@ -5,22 +5,30 @@ import { Alert } from "@/components/ui/alert";
 import { Copy, Server } from "lucide-react";
 import { AlertDescription } from "@/components/ui/alert";
 import { AlertTitle } from "@/components/ui/alert";
-import { Badge,  BadgeProps } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge"; // Only import Badge, not BadgeProps
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
+import React from "react";
+
+// Locally define BadgeProps type if you need it elsewhere
+export type BadgeProps = {
+  variant?: "secondary" | "destructive";
+  className?: string;
+  children?: React.ReactNode;
+};
 
 interface ApiAlertProps {
   title: string;
   description: string;
-  variant: "public" | "admin";
-};
+  variant?: "public" | "admin";
+}
 
-const textMap: Record<ApiAlertProps["variant"], string> = {
+const textMap: Record<NonNullable<ApiAlertProps["variant"]>, string> = {
   public: "Public",
   admin: "Admin",
 };
 
-const variantMap: Record<ApiAlertProps["variant"], BadgeProps["variant"] > = {
+const variantMap: Record<NonNullable<ApiAlertProps["variant"]>, BadgeProps["variant"]> = {
   public: "secondary",
   admin: "destructive",
 };
@@ -28,38 +36,30 @@ const variantMap: Record<ApiAlertProps["variant"], BadgeProps["variant"] > = {
 export const ApiAlert: React.FC<ApiAlertProps> = ({
   title,
   description,
-variant = "public",
+  variant = "public",
 }) => {
-    const onCopy = ( description : string ) => {
-        navigator.clipboard.writeText(description);
-        toast.success ("API Route Copied to the clipboard.");
-    }
+  const onCopy = (description: string) => {
+    navigator.clipboard.writeText(description);
+    toast.success("API Route Copied to the clipboard.");
+  };
 
-    return (
-        <Alert>
-            <Server className="h-4 w-4" />
-            < AlertTitle className= "flex items-center gap-x-2">
-            {title}
-            <Badge variant={variantMap[variant]} >
-{textMap[variant]}
-            </Badge>
-            </AlertTitle>
-            <AlertDescription className=" mt-4 flex items-center justify-between">
-                <code className="relative rounded bg-muted px-[0.3rem] font-mono text-sm py-[0.2rem] font-semibold">
-                    {description}
-                </code>
-                <Button variant="outline" size="icon" onClick={ () => onCopy(description) }>
-                    <Copy className="h-4 w-4" />
-                </Button>
-            </AlertDescription>
-            </Alert>
-    );
+  return (
+    <Alert>
+      <Server className="h-4 w-4" />
+      <AlertTitle className="flex items-center gap-x-2">
+        {title}
+        <Badge variant={variantMap[variant]}>
+          {textMap[variant]}
+        </Badge>
+      </AlertTitle>
+      <AlertDescription className="mt-4 flex items-center justify-between">
+        <code className="relative rounded bg-muted px-[0.3rem] font-mono text-sm py-[0.2rem] font-semibold">
+          {description}
+        </code>
+        <Button variant="outline" size="icon" onClick={() => onCopy(description)}>
+          <Copy className="h-4 w-4" />
+        </Button>
+      </AlertDescription>
+    </Alert>
+  );
 };
-
-export type BadgeProps = {
-  variant?: "secondary" | "destructive";
-  className?: string;
-  children?: React.ReactNode;
-};
-
-
