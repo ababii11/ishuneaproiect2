@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { CellAction } from "./cell-action"; // asigură-te că importul este corect
 
 export interface BillboardColumn {
   id: string;
@@ -27,5 +28,10 @@ export const columns: ColumnDef<BillboardColumn>[] = [
   {
     accessorKey: "createdAt",
     header: "Created At",
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => <CellAction data={row.original} />,
   },
 ];

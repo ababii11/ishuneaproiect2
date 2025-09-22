@@ -23,6 +23,13 @@ export function MainNav({ className, ...props }: HTMLAttributes<HTMLDivElement>)
             active: !!storeId && pathname === `/${storeId}/billboard`,
         },
 
+        
+        {
+            href: storeId ? `/${storeId}/categories` : "/",
+            label: "Categories",
+            active: !!storeId && pathname === `/${storeId}/categories`,
+        },
+
         {
             href: storeId ? `/${storeId}/settings` : "/",
             label: "Settings",
