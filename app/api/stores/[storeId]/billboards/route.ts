@@ -36,6 +36,10 @@ export async function POST(
             }
         });
 
+        if (!storeByUserId) {
+            return new NextResponse('Unauthorized', { status: 403 });
+        }
+
         const billboard = await prisma.billboard.create({
             data: {
                 label,
@@ -50,3 +54,25 @@ export async function POST(
         return new NextResponse('Internal error', { status: 500 });
     }
 }
+
+
+export async function GET(
+    req: Request, 
+    { params }: { params: { storeId: string } }  
+) {
+    try {
+     if (!params.storeId) {
+            return new NextResponse('StoreId is required', { status: 400 });   
+        }
+
+          const billboards = await prisma.billboard.findMany({
+            where: { storeId: params.storeId },
+        });
+
+         return NextResponse.json(billboards);
+    } catch (error) {
+        console.log('[BILLBOARDS_GEt]', error);
+        return new NextResponse('Internal error', { status: 500 });
+    }
+}
+

@@ -49,12 +49,25 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
       : { label: "", imageURL: "" },
   });
 
+  // Submit CREATE or EDIT
   const onSubmit = async (data: BillboardFormValues) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      await axios.patch(`/api/stores/${params?.storeId}/billboards/${params?.billboardId}`, data);
+      if (initialData) {
+        await axios.patch(
+          `/api/stores/${params?.storeId}/billboards/${params?.billboardId}`,
+          data
+        );
+        toast.success("Billboard updated");
+      } else {
+        await axios.post(
+          `/api/stores/${params?.storeId}/billboards`,
+          data
+        );
+        toast.success("Billboard created");
+      }
       router.refresh();
-      toast.success("Billboard updated");
+      router.push(`/${params?.storeId}/billboards`);
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
@@ -63,9 +76,11 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
   };
 
   const onDelete = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      await axios.delete(`/api/stores/${params?.storeId}/billboards/${params?.billboardId}`);
+      await axios.delete(
+        `/api/stores/${params?.storeId}/billboards/${params?.billboardId}`
+      );
       router.refresh();
       router.push(`/stores/${params?.storeId}/billboards`);
       toast.success("Billboard deleted");
@@ -84,7 +99,12 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
-          <Button disabled={loading} variant="destructive" size="icon" onClick={() => setOpen(true)}>
+          <Button
+            disabled={loading}
+            variant="destructive"
+            size="icon"
+            onClick={() => setOpen(true)}
+          >
             <Trash className="h-4 w-4" />
           </Button>
         )}
@@ -112,7 +132,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
               </FormItem>
             )}
           />
-
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
@@ -128,7 +147,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
               )}
             />
           </div>
-
           <Button disabled={loading} type="submit" className="ml-auto">
             {action}
           </Button>
@@ -139,7 +157,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
 
       <ApiAlert
         title="NEXT_PUBLIC_API_URL"
-        description={`${origin}/api/stores/${params?.storeId}/billboards/${params?.billboardId}`}
+        description={`${origin}/api/stores/${params?.storeId}/billboards/${params?.billboardId ?? ""}`}
         variant="public"
       />
     </>
