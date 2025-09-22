@@ -5,10 +5,11 @@ import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { Heading } from "@/components/heading";
 import { Separator } from "@/components/ui/separator";
-import { Billboard } from "@prisma/client";
+import { BillboardColumn, columns } from "./columns";
+import { DataTable } from "@/components/ui/data-table";
 
 interface BillboardClientProps {
-  data: Billboard[];
+  data: BillboardColumn[];
 }
 
 export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
@@ -31,12 +32,14 @@ export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator className="my-6" />
+      <DataTable columns={columns} data={data} />
 
       {data.length === 0 ? (
         <div className="text-center text-muted-foreground mt-16 text-lg">
           No billboards found. Start by adding a new one!
         </div>
       ) : (
+
         <div>
           {data.map((billboard) => (
             <div key={billboard.id} className="border p-4 rounded mb-4">
