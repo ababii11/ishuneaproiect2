@@ -32,7 +32,7 @@ export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator className="my-6" />
-      <DataTable columns={columns} data={data} />
+      <DataTable searchKey='label' columns={columns} data={data} />
 
       {data.length === 0 ? (
         <div className="text-center text-muted-foreground mt-16 text-lg">
