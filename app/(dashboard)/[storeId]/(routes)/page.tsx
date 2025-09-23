@@ -1,23 +1,24 @@
 import React from "react";
 import prisma from "@/lib/prismadb";
 
-
 interface DashboardPageProps {
-    params: { storeId: string };
+  params: Promise<{ storeId: string }>;
 }
 
 const DashboardPage = async ({ params }: DashboardPageProps) => {
-    const store = await prisma.store.findFirst({
-        where: {
-            id: params.storeId,
-        }
-    });
+  const { storeId } = await params;
 
-    return (
-        <div className="text-2xl font-bold">
-            Active Store: {store?.name}
-         </div>
-    );
-}
+  const store = await prisma.store.findFirst({
+    where: {
+      id: storeId,
+    },
+  });
+
+  return (
+    <div className="text-2xl font-bold">
+      Active Store: {store?.name ? store.name : "Store not found"}
+    </div>
+  );
+};
 
 export default DashboardPage;

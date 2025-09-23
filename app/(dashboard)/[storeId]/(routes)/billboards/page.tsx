@@ -4,10 +4,15 @@ import { BillboardClient } from "./components/client";
 import prisma from "@/lib/prismadb";
 import { BillboardColumn } from "./components/columns";
 
+const BillboardsPage = async ({
+  params,
+}: {
+  params: Promise<{ storeId: string }>;
+}) => {
+  const { storeId } = await params;  // await aici
 
-const BillboardsPage = async ({ params }: { params: { storeId: string } }) => {
   const billboards = await prisma.billboard.findMany({
-    where: { storeId: params.storeId },
+    where: { storeId },  // folosim storeId după await
     orderBy: { createdAt: "desc" },
   });
 

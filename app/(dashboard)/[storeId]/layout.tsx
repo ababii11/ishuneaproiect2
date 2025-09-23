@@ -5,10 +5,10 @@ import Navbar from "@/components/navbar";
 
 export default async function DashboardLayout({
   children,
-  params
+  params,
 }: {
   children: React.ReactNode;
-  params: { storeId: string };
+  params: Promise<{ storeId: string }>;  
 }) {
   const { userId } = await auth();
 
@@ -16,23 +16,25 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
+  const { storeId } = await params;  
+
   const store = await prisma.store.findFirst({
     where: {
-      id: params.storeId,
-      userId
+      id: storeId,
+      userId,
     },
   });
 
-    if (!store) {
-        redirect("/");
+  if (!store) {
+    redirect("/");
+  }
 
-}
   const stores = await prisma.store.findMany({ where: { userId } });
 
-return (
+  return (
     <>
-<Navbar items={stores} />
-    {children}
+      <Navbar items={stores} />
+      {children}
     </>
-);
-};
+  );
+}
