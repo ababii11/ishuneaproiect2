@@ -3,12 +3,12 @@
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
 import { Category, Color, Image, Product, Size } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Separator } from "@/components/ui/separator";
 import {
   Form,
   FormControl,
@@ -51,7 +51,7 @@ const formSchema = z.object({
   isArchived: z.boolean().default(false).optional(),
 });
 
-type productFormValues = z.infer<typeof formSchema>;
+type ProductFormValues = z.infer<typeof formSchema>;
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
@@ -70,10 +70,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const toastMessage = initialData ? "Product updated" : "Product created";
   const action = initialData ? "Save changes" : "Create";
 
-  const form = useForm<productFormValues>({
+  const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
-      ? { ...initialData, price: parseFloat(String(initialData?.price)) }
+      ? { 
+          name: initialData.name,
+          images: initialData.images,
+          price: parseFloat(String(initialData?.price)),
+          categoryId: initialData.categoryId,
+          sizeId: initialData.sizeId,
+          colorId: initialData.colorId,
+          isFeatured: initialData.isFeatured || false,
+          isArchived: initialData.isArchived || false,
+        }
       : {
           name: "",
           images: [],
@@ -86,8 +95,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         },
   });
 
-  // update the billboard
-  const onSubmit = async (data: productFormValues) => {
+  const onSubmit = async (data: ProductFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
@@ -108,7 +116,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  // delete the billboard
   const onDelete = async () => {
     try {
       setLoading(true);

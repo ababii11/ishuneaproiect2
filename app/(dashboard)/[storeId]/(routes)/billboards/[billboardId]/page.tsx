@@ -1,11 +1,12 @@
 import { BillboardForm } from "./components/billboard-form";
 
-const BillboardsPage = async ({ params }: { params: { billboardId: string } }) => {
+const BillboardsPage = async ({ params }: { params: Promise<{ billboardId: string }> }) => {
+  const awaitedParams = await params;
   const billboard = await prisma?.billboard.findUnique({
     where: {
-      id: params.billboardId,
+      id: awaitedParams.billboardId,
     },
-  }) ?? null; 
+  }) ?? null;
 
   return (
     <div className="flex-col">
@@ -17,3 +18,4 @@ const BillboardsPage = async ({ params }: { params: { billboardId: string } }) =
 };
 
 export default BillboardsPage;
+
